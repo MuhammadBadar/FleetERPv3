@@ -1,0 +1,84 @@
+<!-- <aside class="app-sidebar">
+  <nav class="nav-list">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/fleet/drivers" routerLinkActive="active">Drivers</a>
+    <a routerLink="/fleet/vehicles" routerLinkActive="active">Vehicles</a>
+    <a routerLink="/fleet/gpsdevices" routerLinkActive="active">GPS Devices</a>
+  </nav>
+</aside> -->
+
+<aside class="app-sidebar">
+
+  <nav class="nav-list">
+
+    <!-- Normal Dashboard menu -->
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      class="dashboard-link">
+      Dashboard
+    </a>
+
+
+    <!-- Fleet Tree -->
+    <mat-tree
+      #tree
+      [dataSource]="menuData"
+      [childrenAccessor]="childrenAccessor">
+
+
+      <!-- Child Nodes -->
+      <mat-tree-node
+        *matTreeNodeDef="let node"
+        class="child-node">
+
+        <a
+          [routerLink]="node.route"
+          routerLinkActive="active"
+          class="child-link">
+
+          {{ node.name }}
+
+        </a>
+
+      </mat-tree-node>
+
+
+      <!-- Parent Node -->
+      <mat-nested-tree-node
+        *matTreeNodeDef="let node; when: hasChild">
+
+        <div
+          class="fleet-parent"
+          matTreeNodeToggle>
+
+          <mat-icon class="expand-icon">
+            {{ tree.isExpanded(node)
+                ? 'expand_more'
+                : 'chevron_right' }}
+          </mat-icon>
+
+          <span>
+            {{ node.name }}
+          </span>
+
+        </div>
+
+
+        <!-- Children -->
+        <div
+          class="fleet-children"
+          [class.tree-invisible]="!tree.isExpanded(node)">
+
+          <ng-container matTreeNodeOutlet>
+          </ng-container>
+
+        </div>
+
+      </mat-nested-tree-node>
+
+    </mat-tree>
+
+  </nav>
+
+</aside>
