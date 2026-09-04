@@ -25,3 +25,164 @@
   color: #4b5563;
   line-height: 1.6;
 }
+.vehicles-page {
+  display: grid;
+  gap: 24px;
+}
+
+.vehicle-form-card,
+.vehicle-grid-card {
+  border-radius: 16px;
+}
+
+mat-card-content {
+  padding-top: 24px;
+}
+
+/* Vehicle form */
+
+.vehicle-form {
+  display: grid;
+  gap: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Vehicles table */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.vehicle-table {
+  width: 100%;
+  min-width: 1050px;
+}
+
+.vehicle-table th {
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.vehicle-table td {
+  white-space: nowrap;
+}
+
+.vehicle-table tr:hover td {
+  background: #f8fafc;
+}
+
+/* Currently selected row */
+
+.editing-row td {
+  background: #eff6ff;
+}
+
+.editing-row:hover td {
+  background: #dbeafe;
+}
+
+/* Row buttons */
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.delete-button {
+  color: #b91c1c;
+}
+
+/* Vehicle status */
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-available {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-assigned {
+  color: #1e40af;
+  background: #dbeafe;
+}
+
+.status-maintenance {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-inactive {
+  color: #4b5563;
+  background: #e5e7eb;
+}
+
+/* Empty collection */
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 48px 16px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* Paginator */
+
+mat-paginator {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Responsive layout */
+
+@media (max-width: 1200px) {
+  .form-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

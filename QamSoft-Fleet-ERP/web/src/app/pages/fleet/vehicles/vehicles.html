@@ -1,5 +1,564 @@
-<section class="page-card">
+<!-- <section class="page-card">
   <p class="eyebrow">Fleet</p>
   <h1>Vehicles</h1>
   <p class="lead">Track all registered vehicles, assignments, and maintenance readiness here.</p>
+</section> -->
+<section class="vehicles-page">
+  <mat-card
+    appearance="outlined"
+    class="vehicle-form-card"
+  >
+    <mat-card-header>
+      <mat-card-title>
+        {{
+          editingVehicleId === null
+            ? 'Add Vehicle'
+            : 'Modify Vehicle'
+        }}
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        Enter the vehicle information below.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form
+        class="vehicle-form"
+        [formGroup]="vehicleForm"
+        (ngSubmit)="saveVehicle()"
+      >
+        <div class="form-grid">
+          <!-- Registration Number -->
+          <mat-form-field appearance="outline">
+            <mat-label>
+              Registration Number
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="registrationNumber"
+              placeholder="For example: ABC-123"
+              autocomplete="off"
+              (input)="registrationNumberChanged()"
+            >
+
+            @if (
+              vehicleForm.controls.registrationNumber
+                .hasError('required')
+            ) {
+              <mat-error>
+                Registration number is required.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.registrationNumber
+                .hasError('minlength')
+            ) {
+              <mat-error>
+                Enter at least 3 characters.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.registrationNumber
+                .hasError('maxlength')
+            ) {
+              <mat-error>
+                Registration number cannot exceed
+                15 characters.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.registrationNumber
+                .hasError('pattern')
+            ) {
+              <mat-error>
+                Only letters, numbers, and hyphens
+                are allowed.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.registrationNumber
+                .hasError('duplicate')
+            ) {
+              <mat-error>
+                This registration number already exists.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Make -->
+          <mat-form-field appearance="outline">
+            <mat-label>Make</mat-label>
+
+            <input
+              matInput
+              formControlName="make"
+              placeholder="For example: Toyota"
+              autocomplete="off"
+            >
+
+            @if (
+              vehicleForm.controls.make
+                .hasError('required')
+            ) {
+              <mat-error>
+                Make is required.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.make
+                .hasError('minlength')
+            ) {
+              <mat-error>
+                Make must contain at least 2 characters.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.make
+                .hasError('maxlength')
+            ) {
+              <mat-error>
+                Make cannot exceed 50 characters.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Model -->
+          <mat-form-field appearance="outline">
+            <mat-label>Model</mat-label>
+
+            <input
+              matInput
+              formControlName="model"
+              placeholder="For example: Corolla"
+              autocomplete="off"
+            >
+
+            @if (
+              vehicleForm.controls.model
+                .hasError('required')
+            ) {
+              <mat-error>
+                Model is required.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.model
+                .hasError('maxlength')
+            ) {
+              <mat-error>
+                Model cannot exceed 50 characters.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Manufacturing Year -->
+          <mat-form-field appearance="outline">
+            <mat-label>
+              Manufacturing Year
+            </mat-label>
+
+            <input
+              matInput
+              type="number"
+              formControlName="manufacturingYear"
+              min="1980"
+              [max]="currentYear + 1"
+            >
+
+            @if (
+              vehicleForm.controls.manufacturingYear
+                .hasError('required')
+            ) {
+              <mat-error>
+                Manufacturing year is required.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.manufacturingYear
+                .hasError('min')
+            ) {
+              <mat-error>
+                Year cannot be earlier than 1980.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.manufacturingYear
+                .hasError('max')
+            ) {
+              <mat-error>
+                Year cannot be later than
+                {{ currentYear + 1 }}.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Vehicle Type -->
+          <mat-form-field appearance="outline">
+            <mat-label>Vehicle Type</mat-label>
+
+            <mat-select
+              formControlName="vehicleType"
+            >
+              @for (
+                vehicleType of vehicleTypes;
+                track vehicleType
+              ) {
+                <mat-option [value]="vehicleType">
+                  {{ vehicleType }}
+                </mat-option>
+              }
+            </mat-select>
+
+            @if (
+              vehicleForm.controls.vehicleType
+                .hasError('required')
+            ) {
+              <mat-error>
+                Vehicle type is required.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Fuel Type -->
+          <mat-form-field appearance="outline">
+            <mat-label>Fuel Type</mat-label>
+
+            <mat-select
+              formControlName="fuelType"
+            >
+              @for (
+                fuelType of fuelTypes;
+                track fuelType
+              ) {
+                <mat-option [value]="fuelType">
+                  {{ fuelType }}
+                </mat-option>
+              }
+            </mat-select>
+
+            @if (
+              vehicleForm.controls.fuelType
+                .hasError('required')
+            ) {
+              <mat-error>
+                Fuel type is required.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Odometer -->
+          <mat-form-field appearance="outline">
+            <mat-label>Odometer</mat-label>
+
+            <input
+              matInput
+              type="number"
+              formControlName="odometer"
+              min="0"
+            >
+
+            <span matTextSuffix>km</span>
+
+            @if (
+              vehicleForm.controls.odometer
+                .hasError('required')
+            ) {
+              <mat-error>
+                Odometer reading is required.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.odometer
+                .hasError('min')
+            ) {
+              <mat-error>
+                Odometer reading cannot be negative.
+              </mat-error>
+            }
+
+            @if (
+              vehicleForm.controls.odometer
+                .hasError('max')
+            ) {
+              <mat-error>
+                Odometer reading is too large.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Status -->
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+
+            <mat-select formControlName="status">
+              @for (
+                vehicleStatus of vehicleStatuses;
+                track vehicleStatus
+              ) {
+                <mat-option [value]="vehicleStatus">
+                  {{ vehicleStatus }}
+                </mat-option>
+              }
+            </mat-select>
+
+            @if (
+              vehicleForm.controls.status
+                .hasError('required')
+            ) {
+              <mat-error>
+                Status is required.
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+          >
+            <mat-icon>
+              {{
+                editingVehicleId === null
+                  ? 'save'
+                  : 'edit'
+              }}
+            </mat-icon>
+
+            {{
+              editingVehicleId === null
+                ? 'Save'
+                : 'Update'
+            }}
+          </button>
+
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="clearForm()"
+          >
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Vehicles Grid -->
+  <mat-card
+    appearance="outlined"
+    class="vehicle-grid-card"
+  >
+    <mat-card-header>
+      <mat-card-title>
+        Vehicles
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        {{ dataSource.data.length }}
+        vehicle(s) in memory
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (dataSource.data.length === 0) {
+        <div class="empty-state">
+          <mat-icon>directions_car</mat-icon>
+
+          <p>
+            No vehicles have been added.
+          </p>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table
+            mat-table
+            [dataSource]="dataSource"
+            class="vehicle-table"
+          >
+            <!-- Registration Number Column -->
+            <ng-container
+              matColumnDef="registrationNumber"
+            >
+              <th mat-header-cell *matHeaderCellDef>
+                Registration
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.registrationNumber }}
+              </td>
+            </ng-container>
+
+            <!-- Make Column -->
+            <ng-container matColumnDef="make">
+              <th mat-header-cell *matHeaderCellDef>
+                Make
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.make }}
+              </td>
+            </ng-container>
+
+            <!-- Model Column -->
+            <ng-container matColumnDef="model">
+              <th mat-header-cell *matHeaderCellDef>
+                Model
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.model }}
+              </td>
+            </ng-container>
+
+            <!-- Manufacturing Year Column -->
+            <ng-container
+              matColumnDef="manufacturingYear"
+            >
+              <th mat-header-cell *matHeaderCellDef>
+                Year
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.manufacturingYear }}
+              </td>
+            </ng-container>
+
+            <!-- Vehicle Type Column -->
+            <ng-container
+              matColumnDef="vehicleType"
+            >
+              <th mat-header-cell *matHeaderCellDef>
+                Type
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.vehicleType }}
+              </td>
+            </ng-container>
+
+            <!-- Fuel Type Column -->
+            <ng-container matColumnDef="fuelType">
+              <th mat-header-cell *matHeaderCellDef>
+                Fuel
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.fuelType }}
+              </td>
+            </ng-container>
+
+            <!-- Odometer Column -->
+            <ng-container matColumnDef="odometer">
+              <th mat-header-cell *matHeaderCellDef>
+                Odometer
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                {{ vehicle.odometer }} km
+              </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>
+                Status
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                <span
+                  class="status-badge"
+                  [class.status-available]="
+                    vehicle.status === 'Available'
+                  "
+                  [class.status-assigned]="
+                    vehicle.status === 'Assigned'
+                  "
+                  [class.status-maintenance]="
+                    vehicle.status === 'Maintenance'
+                  "
+                  [class.status-inactive]="
+                    vehicle.status === 'Inactive'
+                  "
+                >
+                  {{ vehicle.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>
+                Actions
+              </th>
+
+              <td mat-cell *matCellDef="let vehicle">
+                <div class="row-actions">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    aria-label="Modify vehicle"
+                    title="Modify"
+                    (click)="modifyVehicle(vehicle)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="delete-button"
+                    aria-label="Delete vehicle"
+                    title="Delete"
+                    (click)="deleteVehicle(vehicle.id)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></tr>
+
+            <tr
+              mat-row
+              *matRowDef="
+                let row;
+                columns: displayedColumns
+              "
+              [class.editing-row]="
+                row.id === editingVehicleId
+              "
+            ></tr>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <mat-paginator
+          [pageSize]="5"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          aria-label="Select vehicles page"
+        >
+        </mat-paginator>
+      }
+    </mat-card-content>
+  </mat-card>
 </section>
