@@ -1,174 +1,341 @@
-<section class="page-card">
-  <!-- <p class="eyebrow">Fleet</p>
-  <h1>Driver</h1>
-  <p class="lead">Track all registered Drivers and assignments here.</p> -->
-<!-- Step: 3 -->
-  <div class="page-heading">
-    <p class="eyebrow">Fleet</p>
-    <h1>Driver</h1>
-    <p class="lead">  ETrack all registered Drivers and assignments here. </p>
-  </div>
-
-    <form #driverForm="ngForm" class="driver-form"  (ngSubmit)="addDriver()" >
-
-<!-- Step: 4 -->
-      <div class="form-grid">
-      <div class="form-field">
-        <label for="firstName">First Name</label>
-        <input
-          id="firstName"
-          name="firstName"
-          type="text"
-          placeholder="Enter first name"
-          [(ngModel)]="driverfields.firstName"
-          (ngModelChange)="driverfields.firstName = $event"
-
-          required
-        >
+<section class="drivers-page">
+  <mat-card appearance="outlined" class="driver-form-card">
+    <mat-card-header>
+      <div mat-card-avatar class="driver-card-avatar">
+        <mat-icon>badge</mat-icon>
       </div>
 
-      <div class="form-field">
-        <label for="middleName">Middle Name</label>
-        <input
-          id="middleName"
-          name="middleName"
-          type="text"
-          placeholder="Enter middle name"
-          [(ngModel)]="driverfields.middleName"
-          (ngModelChange)="driverfields.middleName = $event"
+      <mat-card-title>Add Driver</mat-card-title>
+      <mat-card-subtitle>
+        Enter the driver's personal, contact, and license information.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form
+        class="driver-form"
+        [formGroup]="driverForm"
+        (ngSubmit)="saveDriver()"
+      >
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input
+              matInput
+              formControlName="firstName"
+              placeholder="For example: Ali"
+              autocomplete="given-name"
+            >
+
+            @if (driverForm.controls.firstName.hasError('required')) {
+              <mat-error>First name is required.</mat-error>
+            }
+            @if (driverForm.controls.firstName.hasError('minlength')) {
+              <mat-error>Enter at least 2 characters.</mat-error>
+            }
+            @if (driverForm.controls.firstName.hasError('maxlength')) {
+              <mat-error>First name cannot exceed 50 characters.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Middle Name</mat-label>
+            <input
+              matInput
+              formControlName="middleName"
+              placeholder="Optional"
+              autocomplete="additional-name"
+            >
+
+            @if (driverForm.controls.middleName.hasError('maxlength')) {
+              <mat-error>Middle name cannot exceed 50 characters.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input
+              matInput
+              formControlName="lastName"
+              placeholder="For example: Khan"
+              autocomplete="family-name"
+            >
+
+            @if (driverForm.controls.lastName.hasError('required')) {
+              <mat-error>Last name is required.</mat-error>
+            }
+            @if (driverForm.controls.lastName.hasError('minlength')) {
+              <mat-error>Enter at least 2 characters.</mat-error>
+            }
+            @if (driverForm.controls.lastName.hasError('maxlength')) {
+              <mat-error>Last name cannot exceed 50 characters.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CNIC Number</mat-label>
+            <input
+              matInput
+              formControlName="cnicNumber"
+              placeholder="12345-1234567-1"
+              maxlength="15"
+              inputmode="numeric"
+              autocomplete="off"
+            >
+
+            @if (driverForm.controls.cnicNumber.hasError('required')) {
+              <mat-error>CNIC number is required.</mat-error>
+            }
+            @if (driverForm.controls.cnicNumber.hasError('pattern')) {
+              <mat-error>Use the format 12345-1234567-1.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>License Number</mat-label>
+            <input
+              matInput
+              formControlName="licenseNumber"
+              placeholder="For example: LIC-1001"
+              maxlength="30"
+              autocomplete="off"
+            >
+
+            @if (driverForm.controls.licenseNumber.hasError('required')) {
+              <mat-error>License number is required.</mat-error>
+            }
+            @if (driverForm.controls.licenseNumber.hasError('pattern')) {
+              <mat-error>Only letters, numbers, and hyphens are allowed.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input
+              matInput
+              formControlName="phoneNumber"
+              placeholder="0300-1234567"
+              inputmode="tel"
+              autocomplete="tel"
+            >
+
+            @if (driverForm.controls.phoneNumber.hasError('required')) {
+              <mat-error>Phone number is required.</mat-error>
+            }
+            @if (driverForm.controls.phoneNumber.hasError('pattern')) {
+              <mat-error>Enter a valid Pakistani mobile number.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              @for (driverStatus of driverStatuses; track driverStatus) {
+                <mat-option [value]="driverStatus">
+                  {{ driverStatus }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-stroked-button type="button" (click)="resetAddForm()">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+
+          <button mat-flat-button color="primary" type="submit">
+            <mat-icon>save</mat-icon>
+            Save Driver
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="driver-grid-card">
+    <mat-card-header>
+      <mat-card-title>Drivers</mat-card-title>
+      <mat-card-subtitle>
+        {{ dataSource.data.length }} saved driver(s)
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (dataSource.data.length === 0) {
+        <div class="empty-state">
+          <mat-icon>badge</mat-icon>
+          <p>No drivers have been added.</p>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" class="driver-table">
+            <ng-container matColumnDef="firstName">
+              <th mat-header-cell *matHeaderCellDef>First Name</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.firstName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="middleName">
+              <th mat-header-cell *matHeaderCellDef>Middle Name</th>
+              <td mat-cell *matCellDef="let driver">
+                {{ driver.middleName || '—' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastName">
+              <th mat-header-cell *matHeaderCellDef>Last Name</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.lastName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="cnicNumber">
+              <th mat-header-cell *matHeaderCellDef>CNIC</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.cnicNumber }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="licenseNumber">
+              <th mat-header-cell *matHeaderCellDef>License</th>
+              <td mat-cell *matCellDef="let driver">
+                {{ driver.licenseNumber }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="phoneNumber">
+              <th mat-header-cell *matHeaderCellDef>Phone</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.phoneNumber }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let driver">
+                <span
+                  class="status-badge"
+                  [class.status-active]="driver.status === 'Active'"
+                  [class.status-inactive]="driver.status === 'Inactive'"
+                  [class.status-suspended]="driver.status === 'Suspended'"
+                >
+                  {{ driver.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let driver">
+                <div class="row-actions">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    aria-label="Modify driver"
+                    title="Modify"
+                    (click)="openModifyDialog(driver)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="delete-button"
+                    aria-label="Delete driver"
+                    title="Delete"
+                    (click)="deleteDriver(driver.id)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+            ></tr>
+          </table>
+        </div>
+
+        <mat-paginator
+          [pageSize]="5"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          aria-label="Select drivers page"
         >
-      </div>
-
-      <div class="form-field">
-        <label for="lastName">Last Name</label>
-        <input
-          id="lastName"
-          name="lastName"
-          type="text"
-          placeholder="Enter last name"
-          [(ngModel)]="driverfields.lastName"
-          (ngModelChange)="driverfields.lastName = $event"
-          required
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="cnicNumber">CNIC Number</label>
-        <input
-          id="cnicNumber"
-          name="cnicNumber"
-          type="text"
-          placeholder="12345-1234567-1"
-          maxlength="15"
-          [(ngModel)]="driverfields.cnicNumber"
-          (ngModelChange)="driverfields.cnicNumber = $event"
-          required
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="licenseNumber">License Number</label>
-        <input
-          id="licenseNumber"
-          name="licenseNumber"
-          type="text"
-          placeholder="Enter license number"
-          [(ngModel)]="driverfields.licenseNumber"
-          (ngModelChange)="driverfields.licenseNumber = $event"
-          required
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="phoneNumber">Phone Number</label>
-        <input
-          id="phoneNumber"
-          name="phoneNumber"
-          type="tel"
-          placeholder="0300-1234567"
-          [(ngModel)]="driverfields.phoneNumber"
-          (ngModelChange)="driverfields.phoneNumber = $any($event.target).value"
-          required
-        >
-        
-      </div>
-      <div class="form-field"> <p>{{ driverfields.phoneNumber }}</p></div>
-
-<!-- Step: 5  -->
-
-       <div class="form-actions">
-      <button type="submit"  class="button button-primary" [disabled]="driverForm.invalid"    >
-        Add Driver
-      </button>
-       </div>
-    </div>
-  </form>
-
-
-    <div class="driver-preview">
-    <h2>Entered Driver Values</h2>
-
-    <div class="form-grid">
-      <div class="form-field">
-        <label for="firstNamePreview">First Name</label>
-        <input
-          id="firstNamePreview"
-          type="text"
-          [value]="driverfields.firstName"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="middleNamePreview">Middle Name</label>
-        <input
-          id="middleNamePreview"
-          type="text"
-          [value]="driverfields.middleName"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="lastNamePreview">Last Name</label>
-        <input
-          id="lastNamePreview"
-          type="text"
-          [value]="driverfields.lastName"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="cnicNumberPreview">CNIC Number</label>
-        <input
-          id="cnicNumberPreview"
-          type="text"
-          [value]="driverfields.cnicNumber"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="licenseNumberPreview">License Number</label>
-        <input
-          id="licenseNumberPreview"
-          type="text"
-          [value]="driverfields.licenseNumber"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="phoneNumberPreview">Phone Number</label>
-        <input
-          id="phoneNumberPreview"
-          type="text"
-          [value]="driverfields.phoneNumber"
-          readonly
-        >
-      </div>
-    </div>
-  </div>
+        </mat-paginator>
+      }
+    </mat-card-content>
+  </mat-card>
 </section>
 
+<ng-template #modifyDialog>
+  <h2 mat-dialog-title>Modify Driver</h2>
+
+  <mat-dialog-content>
+    <form
+      id="modifyDriverForm"
+      class="modify-driver-form"
+      [formGroup]="modifyDriverForm"
+      (ngSubmit)="updateDriver()"
+    >
+      <div class="form-grid dialog-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Middle Name</mat-label>
+          <input matInput formControlName="middleName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>CNIC Number</mat-label>
+          <input matInput formControlName="cnicNumber" maxlength="15">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>License Number</mat-label>
+          <input matInput formControlName="licenseNumber" maxlength="30">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="phoneNumber">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (driverStatus of driverStatuses; track driverStatus) {
+              <mat-option [value]="driverStatus">
+                {{ driverStatus }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="closeModifyDialog()">
+      <mat-icon>close</mat-icon>
+      Close
+    </button>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      form="modifyDriverForm"
+    >
+      <mat-icon>save</mat-icon>
+      Modify
+    </button>
+  </mat-dialog-actions>
+</ng-template>
