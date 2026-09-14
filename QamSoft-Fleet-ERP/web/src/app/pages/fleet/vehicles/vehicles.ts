@@ -9,7 +9,7 @@
 // export class Vehicles {
 
 // }
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -39,6 +39,9 @@ import {
   VehicleFormValue
 } from './vehicle.model';
 
+import { VehicleService } from '../../../services/vehicleService';
+import { Observable , tap} from 'rxjs';
+
 @Component({
   selector: 'app-vehicles',
   imports: [
@@ -55,7 +58,7 @@ import {
   templateUrl: './vehicles.html',
   styleUrl: './vehicles.scss',
 })
-export class Vehicles {
+export class Vehicles implements OnInit {
   readonly currentYear = new Date().getFullYear();
 
   readonly vehicleTypes = [
@@ -102,6 +105,32 @@ export class Vehicles {
 
   private nextVehicleId = 1;
 
+
+  constructor(private vehicleSvc: VehicleService) { }
+
+   vehicles: any;
+   ngOnInit(): void {
+
+    // Need to write code to load data from Database 
+    // this.vehicleSvc.getAllVehicles.subscribe({
+    //   next: vehicles => {}
+    //   error: 
+    // });
+
+ 
+    // this.vehicleSvc.getAllVehicles.subscribe({ 
+    //   next: vehicles => { 
+    //     this.vehicles = vehicles; 
+
+    //   } 
+    //   error: error => { 
+    //     console.error(error); 
+    //   } 
+    //   //complete: () => { console.log('Request completed'); } 
+    // }); 
+
+    
+  }
   /*
    * A setter is used because the paginator only appears
    * after at least one vehicle has been added.

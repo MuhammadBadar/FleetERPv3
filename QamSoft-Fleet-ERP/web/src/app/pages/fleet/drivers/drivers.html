@@ -1,174 +1,262 @@
-<section class="page-card">
-  <!-- <p class="eyebrow">Fleet</p>
-  <h1>Driver</h1>
-  <p class="lead">Track all registered Drivers and assignments here.</p> -->
-<!-- Step: 3 -->
-  <div class="page-heading">
-    <p class="eyebrow">Fleet</p>
-    <h1>Driver</h1>
-    <p class="lead">  ETrack all registered Drivers and assignments here. </p>
-  </div>
+<div class="person-form">
 
-    <form #driverForm="ngForm" class="driver-form"  (ngSubmit)="addDriver()" >
+  <h2>Person Information</h2>
 
-<!-- Step: 4 -->
-      <div class="form-grid">
-      <div class="form-field">
-        <label for="firstName">First Name</label>
-        <input
-          id="firstName"
-          name="firstName"
-          type="text"
-          placeholder="Enter first name"
-          [(ngModel)]="driverfields.firstName"
-          (ngModelChange)="driverfields.firstName = $event"
+  <form
+    [formGroup]="personForm"
+    (ngSubmit)="submit()">
+    <!-- ==================== -->
+    <!-- Name -->
+    <!-- ==================== -->
 
-          required
-        >
-      </div>
+    <mat-form-field appearance="outline">
 
-      <div class="form-field">
-        <label for="middleName">Middle Name</label>
-        <input
-          id="middleName"
-          name="middleName"
-          type="text"
-          placeholder="Enter middle name"
-          [(ngModel)]="driverfields.middleName"
-          (ngModelChange)="driverfields.middleName = $event"
-        >
-      </div>
+      <mat-label>Name</mat-label>
 
-      <div class="form-field">
-        <label for="lastName">Last Name</label>
-        <input
-          id="lastName"
-          name="lastName"
-          type="text"
-          placeholder="Enter last name"
-          [(ngModel)]="driverfields.lastName"
-          (ngModelChange)="driverfields.lastName = $event"
-          required
-        >
-      </div>
+      <input
+        matInput
+        formControlName="name"
+        placeholder="Enter name">
 
-      <div class="form-field">
-        <label for="cnicNumber">CNIC Number</label>
-        <input
-          id="cnicNumber"
-          name="cnicNumber"
-          type="text"
-          placeholder="12345-1234567-1"
-          maxlength="15"
-          [(ngModel)]="driverfields.cnicNumber"
-          (ngModelChange)="driverfields.cnicNumber = $event"
-          required
-        >
-      </div>
+      <mat-error *ngIf="name?.hasError('required')">
+        Name is required
+      </mat-error>
 
-      <div class="form-field">
-        <label for="licenseNumber">License Number</label>
-        <input
-          id="licenseNumber"
-          name="licenseNumber"
-          type="text"
-          placeholder="Enter license number"
-          [(ngModel)]="driverfields.licenseNumber"
-          (ngModelChange)="driverfields.licenseNumber = $event"
-          required
-        >
-      </div>
+      <mat-error *ngIf="name?.hasError('minlength')">
+        Name must contain at least 3 characters
+      </mat-error>
 
-      <div class="form-field">
-        <label for="phoneNumber">Phone Number</label>
-        <input
-          id="phoneNumber"
-          name="phoneNumber"
-          type="tel"
-          placeholder="0300-1234567"
-          [(ngModel)]="driverfields.phoneNumber"
-          (ngModelChange)="driverfields.phoneNumber = $any($event.target).value"
-          required
-        >
-        
-      </div>
-      <div class="form-field"> <p>{{ driverfields.phoneNumber }}</p></div>
+      <mat-error *ngIf="name?.hasError('maxlength')">
+        Name must contain at max 20 characters
+      </mat-error>
 
-<!-- Step: 5  -->
+    </mat-form-field>
 
-       <div class="form-actions">
-      <button type="submit"  class="button button-primary" [disabled]="driverForm.invalid"    >
-        Add Driver
-      </button>
-       </div>
+
+    <!-- ==================== -->
+    <!-- Gender -->
+    <!-- ==================== -->
+
+    <div class="form-group">
+
+      <label class="mat-label">
+        Gender
+      </label>
+
+      <mat-radio-group
+        formControlName="gender">
+
+        <mat-radio-button value="Male">
+          Male
+        </mat-radio-button>
+
+        <mat-radio-button value="Female">
+          Female
+        </mat-radio-button>
+
+      </mat-radio-group>
+
     </div>
+
+
+    <!-- ==================== -->
+    <!-- Cell -->
+    <!-- ==================== -->
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>Cell</mat-label>
+
+      <input
+        matInput
+        formControlName="cell"
+        placeholder="03001234567">
+
+      <mat-hint>
+        Example: 03001234567
+      </mat-hint>
+
+      <mat-error *ngIf="cell?.hasError('required')">
+        Cell number is required
+      </mat-error>
+
+      <mat-error *ngIf="cell?.hasError('pattern')">
+        Enter a valid Pakistani cell number
+      </mat-error>
+
+    </mat-form-field>
+
+        <!-- ==================== -->
+    <!-- CNIC -->
+    <!-- ==================== -->
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>CNIC</mat-label>
+
+      <input
+        matInput
+        formControlName="cnic"
+        placeholder="12345-1234567-1">
+
+      <mat-hint>
+        Example: 12345-1234567-1
+      </mat-hint>
+
+      <mat-error *ngIf="cnic?.hasError('required')">
+        CNIC  is required
+      </mat-error>
+
+      <mat-error *ngIf="cnic?.hasError('pattern')">
+        Invalid CNIC Number
+      </mat-error>
+
+    </mat-form-field>
+
+
+    <!-- ==================== -->
+    <!-- City -->
+    <!-- ==================== -->
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>City</mat-label>
+
+      <mat-select formControlName="city">
+
+        <mat-option
+          *ngFor="let city of cities"
+          [value]="city">
+
+          {{ city }}
+
+        </mat-option>
+
+      </mat-select>
+
+      <mat-error *ngIf="city?.hasError('required') ||
+                         city?.hasError('cityRequired')">
+
+        Please select a city
+
+      </mat-error>
+
+    </mat-form-field>
+
+
+    <!-- ==================== -->
+    <!-- Email -->
+    <!-- ==================== -->
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>Email</mat-label>
+
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="example@email.com">
+
+      <mat-error *ngIf="email?.hasError('required')">
+        Email is required
+      </mat-error>
+
+      <mat-error *ngIf="email?.hasError('email')">
+        Enter a valid email address
+      </mat-error>
+
+    </mat-form-field>
+
+
+    <!-- ==================== -->
+    <!-- DOB -->
+    <!-- ==================== -->
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>Date of Birth</mat-label>
+
+      <input
+        matInput
+        [matDatepicker]="dobPicker"
+        formControlName="dob">
+
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="dobPicker">
+      </mat-datepicker-toggle>
+
+      <mat-datepicker
+        #dobPicker>
+      </mat-datepicker>
+
+      <mat-error *ngIf="dob?.hasError('required')">
+        Date of birth is required
+      </mat-error>
+
+    </mat-form-field>
+
+
+    <!-- ==================== -->
+    <!-- Age -->
+    <!-- ==================== -->
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>Age</mat-label>
+
+      <input
+        matInput
+        type="number"
+        formControlName="age">
+
+      <mat-hint>
+        Automatically calculated from Date of Birth
+      </mat-hint>
+
+    </mat-form-field>
+
+
+    <!-- ==================== -->
+    <!-- Buttons -->
+    <!-- ==================== -->
+
+    <div class="button-row">
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="personForm.invalid">
+
+        Submit
+
+      </button>
+
+
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="cancel()">
+
+        Cancel
+
+      </button>
+
+    </div>
+
   </form>
 
 
-    <div class="driver-preview">
-    <h2>Entered Driver Values</h2>
+  <!-- ==================== -->
+  <!-- Model Debug -->
+  <!-- ==================== -->
 
-    <div class="form-grid">
-      <div class="form-field">
-        <label for="firstNamePreview">First Name</label>
-        <input
-          id="firstNamePreview"
-          type="text"
-          [value]="driverfields.firstName"
-          readonly
-        >
-      </div>
+  <mat-divider></mat-divider>
 
-      <div class="form-field">
-        <label for="middleNamePreview">Middle Name</label>
-        <input
-          id="middleNamePreview"
-          type="text"
-          [value]="driverfields.middleName"
-          readonly
-        >
-      </div>
+  <h3>Person Model</h3>
 
-      <div class="form-field">
-        <label for="lastNamePreview">Last Name</label>
-        <input
-          id="lastNamePreview"
-          type="text"
-          [value]="driverfields.lastName"
-          readonly
-        >
-      </div>
+  <pre>{{ person | json }}</pre>
 
-      <div class="form-field">
-        <label for="cnicNumberPreview">CNIC Number</label>
-        <input
-          id="cnicNumberPreview"
-          type="text"
-          [value]="driverfields.cnicNumber"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="licenseNumberPreview">License Number</label>
-        <input
-          id="licenseNumberPreview"
-          type="text"
-          [value]="driverfields.licenseNumber"
-          readonly
-        >
-      </div>
-
-      <div class="form-field">
-        <label for="phoneNumberPreview">Phone Number</label>
-        <input
-          id="phoneNumberPreview"
-          type="text"
-          [value]="driverfields.phoneNumber"
-          readonly
-        >
-      </div>
-    </div>
-  </div>
-</section>
-
+</div>
