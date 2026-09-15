@@ -370,17 +370,27 @@
 
       <mat-card-subtitle>
         {{ dataSource.data.length }}
-        vehicle(s) in memory
+        vehicle(s) loaded from the API
       </mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      @if (dataSource.data.length === 0) {
+      @if (isLoadingVehicles()) {
+        <div class="empty-state">
+          <mat-icon>sync</mat-icon>
+          <p>Loading vehicles from the API...</p>
+        </div>
+      } @else if (vehicleLoadError()) {
+        <div class="empty-state error-state">
+          <mat-icon>error_outline</mat-icon>
+          <p>{{ vehicleLoadError() }}</p>
+        </div>
+      } @else if (dataSource.data.length === 0) {
         <div class="empty-state">
           <mat-icon>directions_car</mat-icon>
 
           <p>
-            No vehicles have been added.
+            No vehicles were returned by the API.
           </p>
         </div>
       } @else {

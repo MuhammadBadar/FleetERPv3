@@ -2,24 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { Vehicle } from '../pages/fleet/vehicles/vehicle.model';
+
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class VehicleService {
+  private readonly apiUrl = 'http://localhost:5000/api/Vehicles';
 
-    // Construction Injection 
-    constructor(private http: HttpClient) { }
-    apiURL: string = 'https://locahost:5001/api/';
+  constructor(private readonly http: HttpClient) {}
 
-    getAllVehicles() : Observable<any>{
-      return this.http.get<any>( this.apiURL + '/Vehicles/GetAll');
-    }
-
-    getAllDrivers() : Observable<any>{
-      return this.http.get<any>( this.apiURL + '/Drivers/GetAll');
-    }
-
-  //   GetInquiry(): Observable<InquiryVM[]> {
-  //   return this.http.get<InquiryVM[]>(Globals.BASE_API_URL + 'Inquiry').pipe();
-  // }
+  getAllVehicles(): Observable<Vehicle[]> {
+    return this.http.get<Vehicle[]>(`${this.apiUrl}/GetAllVehicles`);
+  }
 }

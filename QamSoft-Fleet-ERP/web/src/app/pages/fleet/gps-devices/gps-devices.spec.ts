@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GpsDevices } from './gps-devices';
@@ -8,7 +9,8 @@ describe('GpsDevices', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GpsDevices]
+      imports: [GpsDevices],
+      providers: [provideZonelessChangeDetection()]
     })
     .compileComponents();
 

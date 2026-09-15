@@ -1,262 +1,265 @@
-<div class="person-form">
-
-  <h2>Person Information</h2>
-
-  <form
-    [formGroup]="personForm"
-    (ngSubmit)="submit()">
-    <!-- ==================== -->
-    <!-- Name -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>Name</mat-label>
-
-      <input
-        matInput
-        formControlName="name"
-        placeholder="Enter name">
-
-      <mat-error *ngIf="name?.hasError('required')">
-        Name is required
-      </mat-error>
-
-      <mat-error *ngIf="name?.hasError('minlength')">
-        Name must contain at least 3 characters
-      </mat-error>
-
-      <mat-error *ngIf="name?.hasError('maxlength')">
-        Name must contain at max 20 characters
-      </mat-error>
-
-    </mat-form-field>
-
-
-    <!-- ==================== -->
-    <!-- Gender -->
-    <!-- ==================== -->
-
-    <div class="form-group">
-
-      <label class="mat-label">
-        Gender
-      </label>
-
-      <mat-radio-group
-        formControlName="gender">
-
-        <mat-radio-button value="Male">
-          Male
-        </mat-radio-button>
-
-        <mat-radio-button value="Female">
-          Female
-        </mat-radio-button>
-
-      </mat-radio-group>
-
-    </div>
-
-
-    <!-- ==================== -->
-    <!-- Cell -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>Cell</mat-label>
-
-      <input
-        matInput
-        formControlName="cell"
-        placeholder="03001234567">
-
-      <mat-hint>
-        Example: 03001234567
-      </mat-hint>
-
-      <mat-error *ngIf="cell?.hasError('required')">
-        Cell number is required
-      </mat-error>
-
-      <mat-error *ngIf="cell?.hasError('pattern')">
-        Enter a valid Pakistani cell number
-      </mat-error>
-
-    </mat-form-field>
-
-        <!-- ==================== -->
-    <!-- CNIC -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>CNIC</mat-label>
-
-      <input
-        matInput
-        formControlName="cnic"
-        placeholder="12345-1234567-1">
-
-      <mat-hint>
-        Example: 12345-1234567-1
-      </mat-hint>
-
-      <mat-error *ngIf="cnic?.hasError('required')">
-        CNIC  is required
-      </mat-error>
-
-      <mat-error *ngIf="cnic?.hasError('pattern')">
-        Invalid CNIC Number
-      </mat-error>
-
-    </mat-form-field>
-
-
-    <!-- ==================== -->
-    <!-- City -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>City</mat-label>
-
-      <mat-select formControlName="city">
-
-        <mat-option
-          *ngFor="let city of cities"
-          [value]="city">
-
-          {{ city }}
-
-        </mat-option>
-
-      </mat-select>
-
-      <mat-error *ngIf="city?.hasError('required') ||
-                         city?.hasError('cityRequired')">
-
-        Please select a city
-
-      </mat-error>
-
-    </mat-form-field>
-
-
-    <!-- ==================== -->
-    <!-- Email -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>Email</mat-label>
-
-      <input
-        matInput
-        type="email"
-        formControlName="email"
-        placeholder="example@email.com">
-
-      <mat-error *ngIf="email?.hasError('required')">
-        Email is required
-      </mat-error>
-
-      <mat-error *ngIf="email?.hasError('email')">
-        Enter a valid email address
-      </mat-error>
-
-    </mat-form-field>
-
-
-    <!-- ==================== -->
-    <!-- DOB -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>Date of Birth</mat-label>
-
-      <input
-        matInput
-        [matDatepicker]="dobPicker"
-        formControlName="dob">
-
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="dobPicker">
-      </mat-datepicker-toggle>
-
-      <mat-datepicker
-        #dobPicker>
-      </mat-datepicker>
-
-      <mat-error *ngIf="dob?.hasError('required')">
-        Date of birth is required
-      </mat-error>
-
-    </mat-form-field>
-
-
-    <!-- ==================== -->
-    <!-- Age -->
-    <!-- ==================== -->
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>Age</mat-label>
-
-      <input
-        matInput
-        type="number"
-        formControlName="age">
-
-      <mat-hint>
-        Automatically calculated from Date of Birth
-      </mat-hint>
-
-    </mat-form-field>
-
-
-    <!-- ==================== -->
-    <!-- Buttons -->
-    <!-- ==================== -->
-
-    <div class="button-row">
-
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="personForm.invalid">
-
-        Submit
-
-      </button>
-
-
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="cancel()">
-
-        Cancel
-
-      </button>
-
-    </div>
-
-  </form>
-
-
-  <!-- ==================== -->
-  <!-- Model Debug -->
-  <!-- ==================== -->
-
-  <mat-divider></mat-divider>
-
-  <h3>Person Model</h3>
-
-  <pre>{{ person | json }}</pre>
-
-</div>
+<section class="drivers-page">
+  <mat-card appearance="outlined" class="driver-form-card">
+    <mat-card-header>
+      <div mat-card-avatar class="driver-card-avatar">
+        <mat-icon>person</mat-icon>
+      </div>
+
+      <mat-card-title>
+        {{ editingDriverId === null ? 'Add Driver' : 'Modify Driver' }}
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        Enter the driver information below.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="driver-form" [formGroup]="driverForm" (ngSubmit)="saveDriver()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Enter first name" autocomplete="given-name">
+
+            @if (driverForm.controls.firstName.hasError('required')) {
+              <mat-error>First name is required.</mat-error>
+            }
+            @if (driverForm.controls.firstName.hasError('minlength')) {
+              <mat-error>Enter at least 2 characters.</mat-error>
+            }
+            @if (driverForm.controls.firstName.hasError('maxlength')) {
+              <mat-error>First name cannot exceed 50 characters.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Middle Name</mat-label>
+            <input matInput formControlName="middleName" placeholder="Enter middle name" autocomplete="additional-name">
+
+            @if (driverForm.controls.middleName.hasError('maxlength')) {
+              <mat-error>Middle name cannot exceed 50 characters.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Enter last name" autocomplete="family-name">
+
+            @if (driverForm.controls.lastName.hasError('required')) {
+              <mat-error>Last name is required.</mat-error>
+            }
+            @if (driverForm.controls.lastName.hasError('minlength')) {
+              <mat-error>Enter at least 2 characters.</mat-error>
+            }
+            @if (driverForm.controls.lastName.hasError('maxlength')) {
+              <mat-error>Last name cannot exceed 50 characters.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CNIC Number</mat-label>
+            <input
+              matInput
+              formControlName="cnicNumber"
+              placeholder="12345-1234567-1"
+              maxlength="15"
+              autocomplete="off"
+              (input)="uniqueFieldChanged()"
+            >
+            <mat-hint>Format: 12345-1234567-1</mat-hint>
+
+            @if (driverForm.controls.cnicNumber.hasError('required')) {
+              <mat-error>CNIC number is required.</mat-error>
+            }
+            @if (driverForm.controls.cnicNumber.hasError('pattern')) {
+              <mat-error>Enter CNIC as 12345-1234567-1.</mat-error>
+            }
+            @if (driverForm.controls.cnicNumber.hasError('duplicate')) {
+              <mat-error>This CNIC number already exists.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>License Number</mat-label>
+            <input
+              matInput
+              formControlName="licenseNumber"
+              placeholder="Enter license number"
+              autocomplete="off"
+              (input)="uniqueFieldChanged()"
+            >
+
+            @if (driverForm.controls.licenseNumber.hasError('required')) {
+              <mat-error>License number is required.</mat-error>
+            }
+            @if (driverForm.controls.licenseNumber.hasError('minlength')) {
+              <mat-error>Enter at least 3 characters.</mat-error>
+            }
+            @if (driverForm.controls.licenseNumber.hasError('maxlength')) {
+              <mat-error>License number cannot exceed 30 characters.</mat-error>
+            }
+            @if (driverForm.controls.licenseNumber.hasError('duplicate')) {
+              <mat-error>This license number already exists.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput type="tel" formControlName="phoneNumber" placeholder="0300-1234567" autocomplete="tel">
+            <mat-hint>Use 0300-1234567 or 03001234567</mat-hint>
+
+            @if (driverForm.controls.phoneNumber.hasError('required')) {
+              <mat-error>Phone number is required.</mat-error>
+            }
+            @if (driverForm.controls.phoneNumber.hasError('pattern')) {
+              <mat-error>Enter a valid Pakistani mobile number.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              @for (status of driverStatuses; track status) {
+                <mat-option [value]="status">{{ status }}</mat-option>
+              }
+            </mat-select>
+
+            @if (driverForm.controls.status.hasError('required')) {
+              <mat-error>Status is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit">
+            <mat-icon>{{ editingDriverId === null ? 'save' : 'edit' }}</mat-icon>
+            {{ editingDriverId === null ? 'Save' : 'Update' }}
+          </button>
+
+          <button mat-stroked-button type="button" (click)="clearForm()">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="driver-grid-card">
+    <mat-card-header>
+      <mat-card-title>Drivers</mat-card-title>
+      <mat-card-subtitle>
+        {{ dataSource.data.length }} driver(s) loaded from the API
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (isLoadingDrivers()) {
+        <div class="empty-state">
+          <mat-icon>sync</mat-icon>
+          <p>Loading drivers from the API...</p>
+        </div>
+      } @else if (driverLoadError()) {
+        <div class="empty-state error-state">
+          <mat-icon>error_outline</mat-icon>
+          <p>{{ driverLoadError() }}</p>
+        </div>
+      } @else if (dataSource.data.length === 0) {
+        <div class="empty-state">
+          <mat-icon>badge</mat-icon>
+          <p>No drivers were returned by the API.</p>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" class="driver-table">
+            <ng-container matColumnDef="firstName">
+              <th mat-header-cell *matHeaderCellDef>First Name</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.firstName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="middleName">
+              <th mat-header-cell *matHeaderCellDef>Middle Name</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.middleName || '—' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastName">
+              <th mat-header-cell *matHeaderCellDef>Last Name</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.lastName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="cnicNumber">
+              <th mat-header-cell *matHeaderCellDef>CNIC</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.cnicNumber }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="licenseNumber">
+              <th mat-header-cell *matHeaderCellDef>License</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.licenseNumber }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="phoneNumber">
+              <th mat-header-cell *matHeaderCellDef>Phone</th>
+              <td mat-cell *matCellDef="let driver">{{ driver.phoneNumber }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let driver">
+                <span
+                  class="status-badge"
+                  [class.status-active]="driver.status === 'Active'"
+                  [class.status-inactive]="driver.status === 'Inactive'"
+                  [class.status-suspended]="driver.status === 'Suspended'"
+                >
+                  {{ driver.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let driver">
+                <div class="row-actions">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    aria-label="Modify driver"
+                    title="Modify"
+                    (click)="modifyDriver(driver)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="delete-button"
+                    aria-label="Delete driver"
+                    title="Delete"
+                    (click)="deleteDriver(driver.id)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+              [class.editing-row]="row.id === editingDriverId"
+            ></tr>
+          </table>
+        </div>
+
+        <mat-paginator
+          [pageSize]="5"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          aria-label="Select drivers page"
+        ></mat-paginator>
+      }
+    </mat-card-content>
+  </mat-card>
+</section>

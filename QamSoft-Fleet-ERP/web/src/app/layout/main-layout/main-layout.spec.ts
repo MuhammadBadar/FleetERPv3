@@ -1,4 +1,6 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { MainLayout } from './main-layout';
 
@@ -8,7 +10,8 @@ describe('MainLayout', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayout]
+      imports: [MainLayout],
+      providers: [provideZonelessChangeDetection(), provideRouter([])]
     })
     .compileComponents();
 

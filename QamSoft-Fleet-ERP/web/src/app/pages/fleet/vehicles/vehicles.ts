@@ -9,7 +9,7 @@
 // export class Vehicles {
 
 // }
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -40,7 +40,6 @@ import {
 } from './vehicle.model';
 
 import { VehicleService } from '../../../services/vehicleService';
-import { Observable , tap} from 'rxjs';
 
 @Component({
   selector: 'app-vehicles',
@@ -102,34 +101,36 @@ export class Vehicles implements OnInit {
     new MatTableDataSource<Vehicle>([]);
 
   editingVehicleId: number | null = null;
+  readonly isLoadingVehicles = signal(true);
+  readonly vehicleLoadError = signal('');
 
   private nextVehicleId = 1;
 
 
   constructor(private vehicleSvc: VehicleService) { }
 
-   vehicles: any;
-   ngOnInit(): void {
+  ngOnInit(): void {
+    this.loadVehiclesFromApi();
+  }
 
-    // Need to write code to load data from Database 
-    // this.vehicleSvc.getAllVehicles.subscribe({
-    //   next: vehicles => {}
-    //   error: 
-    // });
-
- 
-    // this.vehicleSvc.getAllVehicles.subscribe({ 
-    //   next: vehicles => { 
-    //     this.vehicles = vehicles; 
-
-    //   } 
-    //   error: error => { 
-    //     console.error(error); 
-    //   } 
-    //   //complete: () => { console.log('Request completed'); } 
-    // }); 
-
-    
+  private loadVehiclesFromApi(): void {
+    this.vehicleSvc.getAllVehicles().subscribe({
+      next: vehicles => {
+        this.dataSource.data = vehicles;
+        this.nextVehicleId = vehicles.reduce(
+          (nextId, vehicle) => Math.max(nextId, vehicle.id + 1),
+          1
+        );
+        this.isLoadingVehicles.set(false);
+        this.vehicleLoadError.set('');
+        console.log('Vehicles loaded from API:', vehicles);
+      },
+      error: error => {
+        this.isLoadingVehicles.set(false);
+        this.vehicleLoadError.set('Unable to load vehicles from the API.');
+        console.error('Unable to load vehicles from the API:', error);
+      }
+    });
   }
   /*
    * A setter is used because the paginator only appears

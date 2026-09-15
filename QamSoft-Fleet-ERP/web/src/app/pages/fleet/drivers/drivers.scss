@@ -65,6 +65,14 @@ mat-card-content {
   background: #f8fafc;
 }
 
+.editing-row td {
+  background: #eff6ff;
+}
+
+.editing-row:hover td {
+  background: #dbeafe;
+}
+
 .row-actions {
   display: flex;
   align-items: center;
@@ -121,12 +129,6 @@ mat-paginator {
   border-top: 1px solid #e5e7eb;
 }
 
-.dialog-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-width: 0;
-  padding-top: 8px;
-}
-
 @media (max-width: 1200px) {
   .form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -134,8 +136,7 @@ mat-paginator {
 }
 
 @media (max-width: 640px) {
-  .form-grid,
-  .dialog-grid {
+  .form-grid {
     grid-template-columns: 1fr;
   }
 
