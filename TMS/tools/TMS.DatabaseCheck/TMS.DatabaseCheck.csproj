@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup><ProjectReference Include="../../src/TMS.Infrastructure/TMS.Infrastructure.csproj" /></ItemGroup></Project>

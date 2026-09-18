@@ -1,0 +1,43 @@
+<header><a class="brand" href="/">T<span>M</span>S<span class="brand-sub"> / Task workspace</span></a><span class="workspace">Workspace 01</span></header>
+<main>
+  <div class="heading"><div><p class="eyebrow">WORK MANAGEMENT</p><h1>A clear view of your work.</h1><p class="muted">Plan tasks, set priorities, and keep progress in sight.</p></div><span class="storage">{{ storage() === 'InMemory' ? 'Demo · resets on restart' : storage() }}</span></div>
+  <section class="metrics" aria-label="Task statistics">
+    <article><span>Total tasks</span><strong>{{ tasks().length }}</strong></article>
+    <article><span>In the pipeline</span><strong>{{ open() }}</strong></article>
+    <article><span>Resolved & closed</span><strong>{{ done() }}</strong></article>
+  </section>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
+  <div class="layout">
+    <section class="panel task-list">
+      <div class="panel-heading"><h2>Tasks <span class="count">{{ visible().length }}</span></h2><button class="secondary" (click)="load()" [disabled]="loading() || saving()">Refresh</button></div>
+      <label class="search">Find a task<input type="search" placeholder="Search title, assignee, or ID…" [ngModel]="search()" (ngModelChange)="search.set($event)"></label>
+      @if (loading()) { <p class="empty" role="status">Loading tasks…</p> }
+      @else {
+        @for (task of visible(); track task.id) {
+          <article class="task">
+            <div class="task-top"><span class="task-id">TMS-{{ task.id }}</span><span class="badge">{{ priority(task.priorityId) }}</span><span class="state">{{ status(task.statusId) }}</span></div>
+            <h3>{{ task.title }}</h3>
+            @if (task.description) { <p class="description">{{ task.description }}</p> }
+            <div class="task-footer"><span>{{ task.userId || 'Unassigned' }} · {{ task.sp }} h @if (!task.isActive) { · Inactive }</span><div><button class="text-button" (click)="edit(task)" [disabled]="saving()">Edit</button><button class="text-button danger" (click)="remove(task)" [disabled]="saving()">Delete</button></div></div>
+          </article>
+        } @empty { <div class="empty"><h3>{{ search() ? 'No matching tasks' : 'Start with your first task' }}</h3><p>{{ search() ? 'Try a different search.' : 'Use the form to add work to this workspace.' }}</p></div> }
+      }
+    </section>
+    <section class="panel editor"><h2>{{ editingId() === null ? 'Create a task' : 'Edit TMS-' + editingId() }}</h2>
+      <form #form="ngForm" (ngSubmit)="save()"><fieldset [disabled]="saving()">
+        <label>Title<input name="title" [(ngModel)]="model.title" required maxlength="1000" placeholder="What needs to be done?"></label>
+        <label>Description<textarea name="description" [(ngModel)]="model.description" rows="3" placeholder="Add useful context"></textarea></label>
+        <div class="row"><label>Status<select name="status" [(ngModel)]="model.statusId">@for (status of statuses; track status.id) { <option [ngValue]="status.id">{{ status.name }}</option> }</select></label><label>Priority<select name="priority" [(ngModel)]="model.priorityId">@for (priority of priorities; track priority.id) { <option [ngValue]="priority.id">{{ priority.name }}</option> }</select></label></div>
+        <div class="row"><label>Assignee ID<input name="userId" [(ngModel)]="model.userId" maxlength="255" placeholder="Optional"></label><label>Estimated hours<input name="sp" type="number" [(ngModel)]="model.sp" required min="0" max="9999999.99" step="0.01"></label></div>
+        <div class="row"><label>Project ID<input name="projectId" type="number" [(ngModel)]="model.projectId" required min="0" step="1"></label><label>Module ID<input name="moduleId" type="number" [(ngModel)]="model.moduleId" required min="0" step="1"></label></div>
+        <div class="row"><label>Start date<input type="datetime-local" name="start" [(ngModel)]="model.startDate" step="any"></label><label>End date<input type="datetime-local" name="end" [(ngModel)]="model.endDate" step="any"></label></div>
+        <label>Reason / notes<textarea name="reason" [(ngModel)]="model.reason" rows="2"></textarea></label>
+        <label class="checkbox"><input type="checkbox" name="active" [(ngModel)]="model.isActive"> Active task</label>
+        <div class="actions"><button type="submit" [disabled]="form.invalid || saving()">{{ saving() ? 'Saving…' : editingId() === null ? 'Create task' : 'Save changes' }}</button>@if (editingId() !== null) { <button type="button" class="secondary" (click)="reset()">Cancel</button> }</div>
+      </fieldset></form>
+    </section>
+  </div>
+</main><footer>TMS · Your work, organized.</footer>
+
+

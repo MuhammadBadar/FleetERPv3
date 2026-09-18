@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../TMS.Application/TMS.Application.csproj" /><PackageReference Include="MySqlConnector" Version="2.4.0" /></ItemGroup></Project>

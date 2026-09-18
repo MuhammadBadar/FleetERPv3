@@ -1,0 +1,27 @@
+@host = http://localhost:5080
+@clientId = 1
+
+### Insert. Omit Id; the response contains the generated task ID.
+POST {{host}}/api/tasks?clientId={{clientId}}
+Content-Type: application/json
+
+{
+  "title": "First task",
+  "description": "Stored in tasks",
+  "userId": "",
+  "projectId": 0,
+  "moduleId": 0,
+  "statusId": 1107001,
+  "priorityId": 1108003,
+  "sp": 1.25,
+  "startDate": "2026-09-17T10:00:00",
+  "endDate": "2026-09-17T11:00:00",
+  "reason": "",
+  "isActive": true
+}
+
+### List tasks through TMS_Search_Tasks.
+GET {{host}}/api/tasks?clientId={{clientId}}
+
+### Replace 1 with the ID returned by POST.
+GET {{host}}/api/tasks/1?clientId={{clientId}}
